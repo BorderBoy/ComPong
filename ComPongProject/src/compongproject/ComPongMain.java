@@ -10,12 +10,14 @@ package compongproject;
  * @author Jonas
  */
 public class ComPongMain {
-
-    /**
-     * @param args the command line arguments
-     */
+    
+    
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+    }
+    
+    private void p(Object o){
+        System.out.println(o);
     }
     
 }
