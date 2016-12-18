@@ -5,6 +5,11 @@
  */
 package compongproject;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tests.InputTest;
@@ -16,14 +21,15 @@ import org.newdawn.slick.tests.InputTest;
 public class ComPongMain {
     
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws LWJGLException {
         try {
-			AppGameContainer container = new AppGameContainer(new InputTest());
-			container.setDisplayMode(1920,1080,true);
-			container.start();
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
+            AppGameContainer container = new AppGameContainer(new InputTest());
+            DisplayMode mode = Display.getDesktopDisplayMode();
+            container.setDisplayMode(mode.getWidth(),mode.getHeight(),true);
+            container.start();
+        } catch (SlickException e) {
+                e.printStackTrace();
+        }
 
     }
     
