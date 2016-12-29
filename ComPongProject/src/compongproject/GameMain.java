@@ -29,7 +29,13 @@ public class GameMain extends BasicGame {
     private Color shapeColor;
     private Input input;
     private BatSkin bat1;
+    private int bat1Skin;
+    private int bat2Skin;
+    private int ball1Skin;
+    private int ball2Skin;
     private BatSkin bat2;
+    private BallSkin ball1;
+    private BallSkin ball2;
     private float bat1Offset;
     private float bat2Offset;
     private boolean ballIsStopped;
@@ -37,15 +43,21 @@ public class GameMain extends BasicGame {
     private float ballVelY;
     private float ballOffsetX;
     private float ballOffsetY;
-    private int ballRadius;
     private int vSpacingToBat;
     private int score1;
     private int score2;
     private int lastScorer;
+    private float batSpeed;
+    private float ballSpeedX;
+    private float ballSpeedY;
 
     
-    public GameMain() {
+    public GameMain(int bat1S, int bat2S, int ball1S, int ball2S) {
         super("Test");
+        bat1Skin = bat1S;
+        bat2Skin = bat2S;
+        ball1Skin = ball1S;
+        ball2Skin = ball2S;
     }
 
     @Override
@@ -59,10 +71,11 @@ public class GameMain extends BasicGame {
         shapeColor = Color.white;
         input = app.getInput();
         String projectPath = new File("").getAbsolutePath() + "\\src\\compongproject\\";
-        ballRadius = 15;
-        vSpacingToBat = 40;
-        bat1 = new BatSkin(0);
-        bat2 = new BatSkin(1);
+        vSpacingToBat = 60;
+        bat1 = new BatSkin(bat1Skin);
+        bat2 = new BatSkin(bat2Skin);
+        ball1 = new BallSkin(ball1Skin);
+        ball2 = new BallSkin(ball2Skin);
         bat1Offset = 0;
         bat2Offset = 0;
         ballIsStopped = true;
@@ -73,6 +86,9 @@ public class GameMain extends BasicGame {
         score1 = 0;
         score2 = 0;
         lastScorer = 0;
+        batSpeed = .7f;
+        ballSpeedX = 1f;
+        ballSpeedY = 1f;
        
         
         
@@ -87,26 +103,26 @@ public class GameMain extends BasicGame {
             app.exit();
         }
         
-        if(input.isKeyDown(Input.KEY_W) || controllerUp[0] && !ballIsStopped){
+        if((input.isKeyDown(Input.KEY_W) || controllerUp[1]) && !ballIsStopped){
             if(bat1Offset > -app.getHeight()/2 + bat1.getHeight()/2){
-                bat1Offset = bat1Offset - .5f;
+                bat1Offset = bat1Offset - batSpeed;
             }
         }
         
-        if(input.isKeyDown(Input.KEY_S) || controllerDown[0] && !ballIsStopped){
+        if((input.isKeyDown(Input.KEY_S) || controllerDown[1]) && !ballIsStopped){
             if(bat1Offset < app.getHeight()/2 - bat1.getHeight()/2)
-                bat1Offset = bat1Offset + .5f;
+                bat1Offset = bat1Offset + batSpeed;
         }
         
-        if(input.isKeyDown(Input.KEY_UP) || controllerUp[4] && !ballIsStopped){
+        if((input.isKeyDown(Input.KEY_UP) || controllerUp[3]) && !ballIsStopped){
             if(bat2Offset > -app.getHeight()/2 + bat2.getHeight()/2){
-                bat2Offset = bat2Offset - .5f;
+                bat2Offset = bat2Offset - batSpeed;
             }
         }
         
-        if(input.isKeyDown(Input.KEY_DOWN) || controllerDown[4] && !ballIsStopped){
+        if((input.isKeyDown(Input.KEY_DOWN) || controllerDown[3]) && !ballIsStopped){
             if(bat2Offset < app.getHeight()/2 - bat2.getHeight()/2){
-                bat2Offset = bat2Offset + .5f;
+                bat2Offset = bat2Offset + batSpeed;
             }
         }
         
@@ -130,23 +146,23 @@ public class GameMain extends BasicGame {
         //Ball movement
         if(ballIsStopped == false){
             if(ballVelX == 1){
-                ballOffsetX = ballOffsetX + .6f;
+                ballOffsetX = ballOffsetX + ballSpeedX;
             } else if(ballVelX == -1){
-                ballOffsetX = ballOffsetX - .6f;
+                ballOffsetX = ballOffsetX - ballSpeedX;
             }
             
             if (ballVelY == 1){
-                ballOffsetY = ballOffsetY + .6f;
+                ballOffsetY = ballOffsetY + ballSpeedY;
             } else if (ballVelY == -1) {
-                ballOffsetY = ballOffsetY - .6f;
+                ballOffsetY = ballOffsetY - ballSpeedY;
             }
         }
         
         
         //right bat-ball collision
-        if(ballOffsetX >= app.getWidth()/2 - ballRadius - vSpacingToBat - bat2.getWidth() && 
+        if(ballOffsetX >= app.getWidth()/2 - ball1.getWidth()/2 - vSpacingToBat - bat2.getWidth() && 
            ballOffsetX < app.getWidth()/2 - vSpacingToBat && 
-           Math.abs(bat2Offset-ballOffsetY) < bat2.getHeight()/2 + ballRadius){
+           Math.abs(bat2Offset-ballOffsetY) < bat2.getHeight()/2 + ball1.getWidth()/2){
             ballVelX = -1;
             
             //vertical velocity decision
@@ -163,9 +179,9 @@ public class GameMain extends BasicGame {
         }
         
         //left bat-ball collision
-        if (ballOffsetX <= -app.getWidth()/2 + ballRadius + vSpacingToBat + bat1.getWidth() &&
+        if (ballOffsetX <= -app.getWidth()/2 + ball1.getWidth()/2 + vSpacingToBat + bat1.getWidth() &&
             ballOffsetX > -app.getWidth()/2 + vSpacingToBat &&    
-            Math.abs(bat1Offset-ballOffsetY) < bat1.getHeight()/2 + ballRadius){
+            Math.abs(bat1Offset-ballOffsetY) < bat1.getHeight()/2 + ball1.getWidth()/2){
              ballVelX = ballVelX = 1;
              
              //vertical velocity decision
@@ -182,7 +198,7 @@ public class GameMain extends BasicGame {
         }
         
         //top and down collision
-        if (Math.abs(ballOffsetY) > app.getHeight()/2 - ballRadius){
+        if (Math.abs(ballOffsetY) > app.getHeight()/2 - ball1.getWidth()/2){
             ballVelY = ballVelY * -1;
         }
         
@@ -198,7 +214,7 @@ public class GameMain extends BasicGame {
         }
         
         //game reset
-        if(score1 > 10 || score2 > 10){
+        if(score1 > 9 || score2 > 9){
             score2 = 0;
             score1 = 0;
             ballIsStopped = true;
@@ -231,17 +247,19 @@ public class GameMain extends BasicGame {
         if(!ballIsStopped){
             //set ball color
             if(ballOffsetX > 0){
-                g.setColor(Color.red);
-                g.fillOval(app.getWidth()/2 - ballRadius + ballOffsetX, app.getHeight()/2 - ballRadius + ballOffsetY, ballRadius*2, ballRadius*2);
-                g.setColor(shapeColor);
+                //g.setColor(Color.red);
+                //g.fillOval(app.getWidth()/2 - ballRadius + ballOffsetX, app.getHeight()/2 - ballRadius + ballOffsetY, ballRadius*2, ballRadius*2);
+                ball2.draw(app.getWidth()/2 - ball1.getWidth()/2 + ballOffsetX, app.getHeight()/2 - ball1.getWidth()/2 + ballOffsetY, ball1.getWidth(), ball1.getWidth());
+                //g.setColor(shapeColor);
             } else {
-                g.setColor(Color.blue);
-                g.fillOval(app.getWidth()/2 - ballRadius + ballOffsetX, app.getHeight()/2 - ballRadius + ballOffsetY, ballRadius*2, ballRadius*2);
-                g.setColor(shapeColor);
+                //g.setColor(Color.blue);
+                //g.fillOval(app.getWidth()/2 - ballRadius + ballOffsetX, app.getHeight()/2 - ballRadius + ballOffsetY, ballRadius*2, ballRadius*2);
+                ball1.draw(app.getWidth()/2 - ball1.getWidth()/2 + ballOffsetX, app.getHeight()/2 - ball1.getWidth()/2+ ballOffsetY, ball1.getWidth(), ball1.getWidth());
+                //g.setColor(shapeColor);
             }
         } else {
             //pre match confoguration
-            g.fillOval(app.getWidth()/2 - ballRadius, app.getHeight()/2 - ballRadius, ballRadius*2, ballRadius*2);
+            g.fillOval(app.getWidth()/2 - ball1.getWidth()/2, app.getHeight()/2 - ball1.getWidth()/2, ball1.getWidth(), ball1.getWidth());
             String str = "Press 'Enter' to start.";
             g.getFont().drawString(app.getWidth()/2 - g.getFont().getWidth(str)/2, .25f * app.getHeight(), str, Color.green);
             

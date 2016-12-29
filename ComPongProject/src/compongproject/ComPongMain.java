@@ -23,7 +23,7 @@ public class ComPongMain {
     
     public static void main(String[] args) throws LWJGLException {
         try {
-            AppGameContainer container = new AppGameContainer(new GameMain());
+            AppGameContainer container = new AppGameContainer(new GameMain(0,1,0,1));
             DisplayMode mode = Display.getDesktopDisplayMode();
             container.setDisplayMode(mode.getWidth(),mode.getHeight(),true);
             container.start();
