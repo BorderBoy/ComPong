@@ -28,8 +28,8 @@ public class GameMain extends BasicGame {
     private AppGameContainer app;
     private Color shapeColor;
     private Input input;
-    private Image bat1Skin;
-    private Image bat2Skin;
+    private BatSkin bat1;
+    private BatSkin bat2;
     private float bat1Offset;
     private float bat2Offset;
     private boolean ballIsStopped;
@@ -61,8 +61,8 @@ public class GameMain extends BasicGame {
         String projectPath = new File("").getAbsolutePath() + "\\src\\compongproject\\";
         ballRadius = 15;
         vSpacingToBat = 40;
-        bat1Skin = new Image(projectPath + "bat1Skin.png");
-        bat2Skin = new Image(projectPath + "bat2Skin.png");
+        bat1 = new BatSkin(0);
+        bat2 = new BatSkin(1);
         bat1Offset = 0;
         bat2Offset = 0;
         ballIsStopped = true;
@@ -88,24 +88,24 @@ public class GameMain extends BasicGame {
         }
         
         if(input.isKeyDown(Input.KEY_W) || controllerUp[0] && !ballIsStopped){
-            if(bat1Offset > -app.getHeight()/2 + bat1Skin.getHeight()/2){
+            if(bat1Offset > -app.getHeight()/2 + bat1.getHeight()/2){
                 bat1Offset = bat1Offset - .5f;
             }
         }
         
         if(input.isKeyDown(Input.KEY_S) || controllerDown[0] && !ballIsStopped){
-            if(bat1Offset < app.getHeight()/2 - bat1Skin.getHeight()/2)
+            if(bat1Offset < app.getHeight()/2 - bat1.getHeight()/2)
                 bat1Offset = bat1Offset + .5f;
         }
         
         if(input.isKeyDown(Input.KEY_UP) || controllerUp[4] && !ballIsStopped){
-            if(bat2Offset > -app.getHeight()/2 + bat2Skin.getHeight()/2){
+            if(bat2Offset > -app.getHeight()/2 + bat2.getHeight()/2){
                 bat2Offset = bat2Offset - .5f;
             }
         }
         
         if(input.isKeyDown(Input.KEY_DOWN) || controllerDown[4] && !ballIsStopped){
-            if(bat2Offset < app.getHeight()/2 - bat2Skin.getHeight()/2){
+            if(bat2Offset < app.getHeight()/2 - bat2.getHeight()/2){
                 bat2Offset = bat2Offset + .5f;
             }
         }
@@ -144,17 +144,17 @@ public class GameMain extends BasicGame {
         
         
         //right bat-ball collision
-        if(ballOffsetX >= app.getWidth()/2 - ballRadius - vSpacingToBat - bat2Skin.getWidth() && 
+        if(ballOffsetX >= app.getWidth()/2 - ballRadius - vSpacingToBat - bat2.getWidth() && 
            ballOffsetX < app.getWidth()/2 - vSpacingToBat && 
-           Math.abs(bat2Offset-ballOffsetY) < bat2Skin.getHeight()/2 + ballRadius){
+           Math.abs(bat2Offset-ballOffsetY) < bat2.getHeight()/2 + ballRadius){
             ballVelX = -1;
             
             //vertical velocity decision
-            if((ballOffsetY-bat2Offset) > bat2Skin.getHeight()/6){
+            if((ballOffsetY-bat2Offset) > bat2.getHeight()/6){
                 if(ballVelY != 1){
                     ballVelY = ballVelY + 1;
                 }
-            } else if((ballOffsetY-bat2Offset)< -bat2Skin.getHeight()/6){
+            } else if((ballOffsetY-bat2Offset)< -bat2.getHeight()/6){
                 if(ballVelY != -1){
                     ballVelY = ballVelY - 1;
                 }
@@ -163,17 +163,17 @@ public class GameMain extends BasicGame {
         }
         
         //left bat-ball collision
-        if (ballOffsetX <= -app.getWidth()/2 + ballRadius + vSpacingToBat + bat1Skin.getWidth() &&
+        if (ballOffsetX <= -app.getWidth()/2 + ballRadius + vSpacingToBat + bat1.getWidth() &&
             ballOffsetX > -app.getWidth()/2 + vSpacingToBat &&    
-            Math.abs(bat1Offset-ballOffsetY) < bat1Skin.getHeight()/2 + ballRadius){
+            Math.abs(bat1Offset-ballOffsetY) < bat1.getHeight()/2 + ballRadius){
              ballVelX = ballVelX = 1;
              
              //vertical velocity decision
-             if((ballOffsetY-bat1Offset) > bat1Skin.getHeight()/6){
+             if((ballOffsetY-bat1Offset) > bat1.getHeight()/6){
                 if(ballVelY != 1){
                     ballVelY = ballVelY + 1;
                 }
-            } else if((ballOffsetY-bat1Offset)< -bat1Skin.getHeight()/6){
+            } else if((ballOffsetY-bat1Offset)< -bat1.getHeight()/6){
                 if(ballVelY != -1){
                     ballVelY = ballVelY - 1;
                 }
@@ -217,8 +217,8 @@ public class GameMain extends BasicGame {
         
         g.setColor(shapeColor);
         //draw bats
-        bat1Skin.draw(vSpacingToBat, (app.getHeight()/2 - bat1Skin.getHeight()/2) + bat1Offset);
-        bat2Skin.draw(app.getWidth() - vSpacingToBat - bat2Skin.getWidth(), (app.getHeight()/2 - bat1Skin.getHeight()/2) + bat2Offset);
+        bat1.draw(vSpacingToBat, (app.getHeight()/2 - bat1.getHeight()/2) + bat1Offset);
+        bat2.draw(app.getWidth() - vSpacingToBat - bat2.getWidth(), (app.getHeight()/2 - bat1.getHeight()/2) + bat2Offset);
         //middle line
         g.fillRect(app.getWidth()/2-1, 0, 2, app.getHeight());
         //draw scores
