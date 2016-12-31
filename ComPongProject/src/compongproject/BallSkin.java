@@ -22,16 +22,16 @@ public class BallSkin extends Image {
     String projectPath;
     
     public BallSkin(int i) throws SlickException {
-         super(new File("").getAbsolutePath() + "\\src\\compongproject\\BallSkins\\ballSkin" + i + ".png");
-        projectPath = new File("").getAbsolutePath() + "\\src\\compongproject\\";
+         super(new File("").getAbsolutePath() + "/src/compongproject/BallSkins/ballSkin" + i + ".png");
+        projectPath = new File("").getAbsolutePath() + "/src/compongproject/";
         id = i;
         loadSkin(i);
     }
     
     //legacy
     public BallSkin(int i, int r, String n) throws SlickException{
-        super(new File("").getAbsolutePath() + "\\src\\compongproject\\BallSkins\\ballSkin" + i + ".png");
-        projectPath = new File("").getAbsolutePath() + "\\src\\compongproject\\";
+        super(new File("").getAbsolutePath() + "/src/compongproject/BallSkins/ballSkin" + i + ".png");
+        projectPath = new File("").getAbsolutePath() + "/src/compongproject/";
         id = i;
         rarity = r;
         skinName = n;

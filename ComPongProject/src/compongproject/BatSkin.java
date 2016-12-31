@@ -23,16 +23,16 @@ public class BatSkin extends Image {
     String projectPath;
     
     public BatSkin(int i) throws SlickException {
-        super(new File("").getAbsolutePath() + "\\src\\compongproject\\BatSkins\\batSkin" + i + ".png");
-        projectPath = new File("").getAbsolutePath() + "\\src\\compongproject\\";
+        super(new File("").getAbsolutePath() + "/src/compongproject/BatSkins/batSkin" + i + ".png");
+        projectPath = new File("").getAbsolutePath() + "/src/compongproject/";
         id = i;
         loadSkin(i);
     }
     
     //legacy
     public BatSkin(int i, int r, String n) throws SlickException{
-        super(new File("").getAbsolutePath() + "\\src\\compongproject\\BatSkins\\batSkin" + i + ".png");
-        projectPath = new File("").getAbsolutePath() + "\\src\\compongproject\\";
+        super(new File("").getAbsolutePath() + "/src/compongproject/BatSkins/batSkin" + i + ".png");
+        projectPath = new File("").getAbsolutePath() + "/src/compongproject/";
         id = i;
         rarity = r;
         skinName = n;
