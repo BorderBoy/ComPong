@@ -22,7 +22,7 @@ public class BatSkin extends Image {
     String projectPath;
     
     public BatSkin(int i) throws SlickException {
-        super(new File("").getAbsolutePath() + "/BatSkins/batSkin" + i + ".png");
+        super(new File("").getAbsolutePath() + "BatSkins/batSkin" + i + ".png");
         projectPath = new File("").getAbsolutePath();
         id = i;
         loadSkin(i);
