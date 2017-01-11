@@ -24,15 +24,15 @@ import org.newdawn.slick.UnicodeFont;
  * @author Jonas
  */
 public class GameMain extends BasicGame {
-
+ 
     private AppGameContainer app;
     private Color shapeColor;
     private Input input;
     private BatSkin bat1;
-    private int bat1Skin;
-    private int bat2Skin;
-    private int ball1Skin;
-    private int ball2Skin;
+    private final int bat1Skin;
+    private final int bat2Skin;
+    private final int ball1Skin;
+    private final int ball2Skin;
     private BatSkin bat2;
     private BallSkin ball1;
     private BallSkin ball2;
@@ -47,17 +47,27 @@ public class GameMain extends BasicGame {
     private int score1;
     private int score2;
     private int lastScorer;
-    private float batSpeed;
+    private float baseBatSpeed;
+    private float baseBallSpeedX;
+    private float baseBallSpeedY;
+    private float batSpeed;    
     private float ballSpeedX;
     private float ballSpeedY;
+    private final String player1Name;
+    private final String player2Name;
+    private boolean gameEnd;
+    private long time;
+    private int bounces;
 
     
-    public GameMain(int bat1S, int bat2S, int ball1S, int ball2S) {
-        super("Test");
+    public GameMain(int bat1S, int bat2S, int ball1S, int ball2S, String name1, String name2) {
+        super("ComPong");
         bat1Skin = bat1S;
         bat2Skin = bat2S;
         ball1Skin = ball1S;
         ball2Skin = ball2S;
+        player1Name = name1;
+        player2Name = name2;
     }
 
     @Override
@@ -65,6 +75,9 @@ public class GameMain extends BasicGame {
         if (gc instanceof AppGameContainer) {
             app = (AppGameContainer) gc;
 	}
+        
+       //app.setMinimumLogicUpdateInterval(20);
+       
         
         //make cursor invisible
         app.setMouseGrabbed(true);
@@ -86,17 +99,23 @@ public class GameMain extends BasicGame {
         score1 = 0;
         score2 = 0;
         lastScorer = 0;
-        batSpeed = .7f;
-        ballSpeedX = 1f;
-        ballSpeedY = 1f;
-       
-        
+        baseBatSpeed = .7f;
+        baseBallSpeedX = 1f;
+        baseBallSpeedY = 1f;
+        gameEnd=false;
+        bounces = 0;
         
         
     }
  
     @Override
-    public void update(GameContainer gc, int i) throws SlickException {
+    public void update(GameContainer gc, int delta) throws SlickException {
+        ballSpeedX = baseBallSpeedX * delta;
+        ballSpeedY = baseBallSpeedY * delta;
+        
+        batSpeed = baseBatSpeed * delta;
+       
+        
         
         //Controls
         if (input.isKeyPressed(Input.KEY_ESCAPE)){
@@ -127,21 +146,6 @@ public class GameMain extends BasicGame {
         }
         
         
-        //Kick-off
-        if(ballIsStopped == true && input.isKeyPressed(Input.KEY_ENTER)){
-            ballIsStopped = false;
-            if (lastScorer == 0){
-                if(Math.random() <= .5){
-                    ballVelX = 1;
-                } else {
-                    ballVelX = -1;
-                }
-            } else if (lastScorer == -1) {
-                ballVelX = 1;
-            } else {
-                ballVelX = -1;
-            }
-        }
         
         //Ball movement
         if(ballIsStopped == false){
@@ -163,6 +167,7 @@ public class GameMain extends BasicGame {
         if(ballOffsetX >= app.getWidth()/2 - ball1.getWidth()/2 - vSpacingToBat - bat2.getWidth() && 
            ballOffsetX < app.getWidth()/2 - vSpacingToBat && 
            Math.abs(bat2Offset-ballOffsetY) < bat2.getHeight()/2 + ball1.getWidth()/2){
+            bounces++;            
             ballVelX = -1;
             
             //vertical velocity decision
@@ -182,6 +187,7 @@ public class GameMain extends BasicGame {
         if (ballOffsetX <= -app.getWidth()/2 + ball1.getWidth()/2 + vSpacingToBat + bat1.getWidth() &&
             ballOffsetX > -app.getWidth()/2 + vSpacingToBat &&    
             Math.abs(bat1Offset-ballOffsetY) < bat1.getHeight()/2 + ball1.getWidth()/2){
+            bounces++;
              ballVelX = ballVelX = 1;
              
              //vertical velocity decision
@@ -198,8 +204,12 @@ public class GameMain extends BasicGame {
         }
         
         //top and down collision
-        if (Math.abs(ballOffsetY) > app.getHeight()/2 - ball1.getWidth()/2){
-            ballVelY = ballVelY * -1;
+        if (ballOffsetY > app.getHeight()/2 - ball1.getWidth()/2){
+            ballVelY = -1;
+        }
+        
+        if (ballOffsetY < -app.getHeight()/2 + ball1.getWidth()/2){
+            ballVelY = 1;
         }
         
         //goal right
@@ -215,16 +225,17 @@ public class GameMain extends BasicGame {
         
         //game reset
         if(score1 > 9 || score2 > 9){
-            score2 = 0;
-            score1 = 0;
-            ballIsStopped = true;
-            ballOffsetX = 0;
-            ballOffsetY = 0;
-            ballVelX = 0;
-            ballVelY = 0;
-            lastScorer = 0;
+            gameEnd = true;    
+            ballIsStopped = true; 
+            
         }
         
+        if(bounces == 10 ){
+            p("time for 10 bounces : " + (System.currentTimeMillis()-time));
+            time = System.currentTimeMillis();
+            bounces = 0 ;
+            
+        }
 
     }
     
@@ -242,20 +253,18 @@ public class GameMain extends BasicGame {
         String s2 = Integer.toString(score2);
         g.drawString(s1, app.getWidth()/2 - 20 - g.getFont().getWidth(s1), 10);
         g.drawString(s2, app.getWidth()/2 + 20, 10);
+        
+        g.drawString(player1Name, app.getWidth()/2 - 50 - g.getFont().getWidth(player1Name) , 10);
+        g.drawString(player2Name, app.getWidth()/2 + 50, 10);
+        
          
         //draw ball
         if(!ballIsStopped){
-            //set ball color
+            //set ball skins
             if(ballOffsetX > 0){
-                //g.setColor(Color.red);
-                //g.fillOval(app.getWidth()/2 - ballRadius + ballOffsetX, app.getHeight()/2 - ballRadius + ballOffsetY, ballRadius*2, ballRadius*2);
                 ball2.draw(app.getWidth()/2 - ball1.getWidth()/2 + ballOffsetX, app.getHeight()/2 - ball1.getWidth()/2 + ballOffsetY, ball1.getWidth(), ball1.getWidth());
-                //g.setColor(shapeColor);
             } else {
-                //g.setColor(Color.blue);
-                //g.fillOval(app.getWidth()/2 - ballRadius + ballOffsetX, app.getHeight()/2 - ballRadius + ballOffsetY, ballRadius*2, ballRadius*2);
                 ball1.draw(app.getWidth()/2 - ball1.getWidth()/2 + ballOffsetX, app.getHeight()/2 - ball1.getWidth()/2+ ballOffsetY, ball1.getWidth(), ball1.getWidth());
-                //g.setColor(shapeColor);
             }
         } else {
             //pre match confoguration
@@ -263,12 +272,22 @@ public class GameMain extends BasicGame {
             String str = "Press 'Enter' to start.";
             g.getFont().drawString(app.getWidth()/2 - g.getFont().getWidth(str)/2, .25f * app.getHeight(), str, Color.green);
             
-        }  
+        }
+        if(gameEnd){            
+            if(score1==1){
+                String winnerMsg = player1Name+"has won ! ! !\nCongratulations !";
+                g.drawString(winnerMsg, app.getWidth()/4-g.getFont().getWidth(winnerMsg)/2, app.getHeight()/2-g.getFont().getHeight(winnerMsg)/2);
+            }
+            else {
+                String winnerMsg = player2Name+"has won ! ! !\nCongratulations !";
+                g.drawString(winnerMsg, 3*app.getWidth()/4-g.getFont().getWidth(winnerMsg)/2, app.getHeight()/2-g.getFont().getHeight(winnerMsg)/2);
+            }
+        }
     }
     
     //reset ball
     private void resetBall(int scorer){
-        if (scorer == 1){
+        if (scorer == 10){
             score2++;
         } else {
             score1++;
@@ -283,26 +302,68 @@ public class GameMain extends BasicGame {
         lastScorer = scorer;
     }
     
+    private void resetGame(){        
+        score2 = 0;
+        score1 = 0;            
+        ballOffsetX = 0;
+        ballOffsetY = 0;
+        ballVelX = 0;
+        ballVelY = 0;
+        lastScorer = 0;
+        gameEnd = false;
+    }     
+        
+    @Override
     public void controllerButtonPressed(int controller, int button) {
         super.controllerButtonPressed(controller, button);
 		
         
         if(ballIsStopped == true && button == 1){
             ballIsStopped = false;
-            if (lastScorer == 0){
-                if(Math.random() <= .5){
+            switch (lastScorer) {
+                case 0:
+                    if(Math.random() <= .5){
+                        ballVelX = 1;
+                    } else {
+                        ballVelX = -1;
+                    }   break;
+                case -1:
                     ballVelX = 1;
-                } else {
+                    break;
+                default:
                     ballVelX = -1;
-                }
-            } else if (lastScorer == -1) {
-                ballVelX = 1;
-            } else {
-                ballVelX = -1;
+                    break;
             }
         }  
-}
-
+}  
+    
+    public void keyPressed(int i, char c){
+        if(i == 28){
+            if (gameEnd){
+                //restart game
+                resetGame();
+            } else if (ballIsStopped){                
+                //kick-off
+                time = System.currentTimeMillis();
+                ballIsStopped = false;
+                switch (lastScorer) {
+                    case 0:
+                        if(Math.random() <= .5){
+                            ballVelX = 1;
+                        } else {
+                            ballVelX = -1;
+                        }   break;
+                    case -1:
+                        ballVelX = 1;
+                        break;
+                    default:
+                        ballVelX = -1;
+                        break;
+                }
+            }
+        }       
+      
+    }
     
     private void p(Object o){
         System.out.println(o);
