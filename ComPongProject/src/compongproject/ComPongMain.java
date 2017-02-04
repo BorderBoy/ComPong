@@ -12,6 +12,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.tests.GUITest;
 import org.newdawn.slick.tests.InputTest;
 
 /**
@@ -23,7 +24,8 @@ public class ComPongMain {
     
     public static void main(String[] args) throws LWJGLException {
         try {
-            AppGameContainer container = new AppGameContainer(new GameMain(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh"));
+            //AppGameContainer container = new AppGameContainer(new GameMain(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh"));
+            AppGameContainer container = new AppGameContainer(new GUITest());
             DisplayMode mode = Display.getDesktopDisplayMode();
             container.setDisplayMode(mode.getWidth(),mode.getHeight(),true);
             container.start();

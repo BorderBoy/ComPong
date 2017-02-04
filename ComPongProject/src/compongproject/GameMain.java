@@ -76,7 +76,7 @@ public class GameMain extends BasicGame {
             app = (AppGameContainer) gc;
 	}
         
-       //app.setMinimumLogicUpdateInterval(20);
+       //app.setMinimumLogicUpdateInterval(30);
        
         
         //make cursor invisible
@@ -110,8 +110,13 @@ public class GameMain extends BasicGame {
  
     @Override
     public void update(GameContainer gc, int delta) throws SlickException {
-        ballSpeedX = baseBallSpeedX * delta;
-        ballSpeedY = baseBallSpeedY * delta;
+        float incRate = 0.4f;
+        float logSpeed = (float) (1-incRate+Math.log(bounces+Math.E)*incRate);
+        
+        
+        ballSpeedX = baseBallSpeedX * delta * logSpeed;
+                
+        ballSpeedY = baseBallSpeedY * delta * logSpeed;
         
         batSpeed = baseBatSpeed * delta;
        
@@ -165,7 +170,7 @@ public class GameMain extends BasicGame {
         
         //right bat-ball collision
         if(ballOffsetX >= app.getWidth()/2 - ball1.getWidth()/2 - vSpacingToBat - bat2.getWidth() && 
-           ballOffsetX < app.getWidth()/2 - vSpacingToBat && 
+           ballOffsetX < app.getWidth()/2 - vSpacingToBat + ballSpeedX &&
            Math.abs(bat2Offset-ballOffsetY) < bat2.getHeight()/2 + ball1.getWidth()/2){
             bounces++;            
             ballVelX = -1;
@@ -185,7 +190,7 @@ public class GameMain extends BasicGame {
         
         //left bat-ball collision
         if (ballOffsetX <= -app.getWidth()/2 + ball1.getWidth()/2 + vSpacingToBat + bat1.getWidth() &&
-            ballOffsetX > -app.getWidth()/2 + vSpacingToBat &&    
+            ballOffsetX > -app.getWidth()/2 + vSpacingToBat - ballSpeedX  &&    
             Math.abs(bat1Offset-ballOffsetY) < bat1.getHeight()/2 + ball1.getWidth()/2){
             bounces++;
              ballVelX = ballVelX = 1;
@@ -230,12 +235,12 @@ public class GameMain extends BasicGame {
             
         }
         
-        if(bounces == 10 ){
+        /*if(bounces == 10 ){
             p("time for 10 bounces : " + (System.currentTimeMillis()-time));
             time = System.currentTimeMillis();
             bounces = 0 ;
             
-        }
+        }*/
 
     }
     
@@ -274,7 +279,7 @@ public class GameMain extends BasicGame {
             
         }
         if(gameEnd){            
-            if(score1==1){
+            if(score1==10){
                 String winnerMsg = player1Name+"has won ! ! !\nCongratulations !";
                 g.drawString(winnerMsg, app.getWidth()/4-g.getFont().getWidth(winnerMsg)/2, app.getHeight()/2-g.getFont().getHeight(winnerMsg)/2);
             }
@@ -287,7 +292,7 @@ public class GameMain extends BasicGame {
     
     //reset ball
     private void resetBall(int scorer){
-        if (scorer == 10){
+        if (scorer == 1){
             score2++;
         } else {
             score1++;
@@ -300,6 +305,7 @@ public class GameMain extends BasicGame {
         bat1Offset = 0;
         bat2Offset = 0;
         lastScorer = scorer;
+        bounces = 0;
     }
     
     private void resetGame(){        
