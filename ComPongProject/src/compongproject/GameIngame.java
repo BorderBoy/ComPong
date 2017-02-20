@@ -5,6 +5,7 @@
  */
 package compongproject;
 
+import java.awt.Font;
 import java.io.File;
 import net.java.games.input.ControllerEnvironment;
 import org.lwjgl.input.Controller;
@@ -13,12 +14,13 @@ import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Font;
+//import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -62,6 +64,9 @@ public class GameIngame extends BasicGameState {
     private boolean gameEnd;
     private long time;
     private int bounces;
+    private TrueTypeFont scoreFont;
+    private TrueTypeFont nameFont;
+    private TrueTypeFont bigFont;
 
     
     public GameIngame(int bat1S, int bat2S, int ball1S, int ball2S, String name1, String name2) {
@@ -87,10 +92,9 @@ public class GameIngame extends BasicGameState {
         
        //app.setMinimumLogicUpdateInterval(30);
        
-        
         //make cursor invisible
         app.setMouseGrabbed(true);
-        app.setShowFPS(false);
+        app.setShowFPS(true);
         shapeColor = Color.white;
         input = app.getInput();
         String projectPath = new File("").getAbsolutePath() + "\\src\\compongproject\\";
@@ -115,7 +119,10 @@ public class GameIngame extends BasicGameState {
         gameEnd=false;
         bounces = 0;
         
-        
+        Font awtFont = new Font("Consolas", Font.PLAIN, 20);
+        scoreFont = new TrueTypeFont(awtFont.deriveFont(40f), false);
+        nameFont = new TrueTypeFont(awtFont.deriveFont(30f), false);
+        bigFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
     }
  
     @Override
@@ -157,6 +164,30 @@ public class GameIngame extends BasicGameState {
             }
         }
         
+        if(input.isKeyDown(Input.KEY_ENTER)){
+             if (gameEnd){
+                //restart game
+                resetGame();
+            } else if (ballIsStopped){                
+                //kick-off
+                time = System.currentTimeMillis();
+                ballIsStopped = false;
+                switch (lastScorer) {
+                    case 0:
+                        if(Math.random() <= .5){
+                            ballVelX = 1;
+                        } else {
+                            ballVelX = -1;
+                        }   break;
+                    case -1:
+                        ballVelX = 1;
+                        break;
+                    default:
+                        ballVelX = -1;
+                        break;
+                }
+            }
+        }
         
         
         //Ball movement
@@ -212,7 +243,6 @@ public class GameIngame extends BasicGameState {
                     ballVelY = ballVelY - 1;
                 }
             }
-            
         }
         
         //top and down collision
@@ -228,7 +258,6 @@ public class GameIngame extends BasicGameState {
         if(ballOffsetX > app.getWidth()/2){
             resetBall(-1);
         }
-        
         
         //goal left
         if (ballOffsetX < -app.getWidth()/2){
@@ -255,19 +284,24 @@ public class GameIngame extends BasicGameState {
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
         
         g.setColor(shapeColor);
+        
         //draw bats
         bat1.draw(vSpacingToBat, (app.getHeight()/2 - bat1.getHeight()/2) + bat1Offset);
         bat2.draw(app.getWidth() - vSpacingToBat - bat2.getWidth(), (app.getHeight()/2 - bat1.getHeight()/2) + bat2Offset);
-        //middle line
+        //draw middle line
         g.fillRect(app.getWidth()/2-1, 0, 2, app.getHeight());
+        
         //draw scores
+        g.setFont(scoreFont);
         String s1 = Integer.toString(score1);
         String s2 = Integer.toString(score2);
         g.drawString(s1, app.getWidth()/2 - 20 - g.getFont().getWidth(s1), 10);
         g.drawString(s2, app.getWidth()/2 + 20, 10);
         
-        g.drawString(player1Name, app.getWidth()/2 - 50 - g.getFont().getWidth(player1Name) , 10);
-        g.drawString(player2Name, app.getWidth()/2 + 50, 10);
+        //draw player names
+        g.setFont(nameFont);
+        g.drawString(player1Name, app.getWidth()/2 - 75 - g.getFont().getWidth(player1Name) , 10);
+        g.drawString(player2Name, app.getWidth()/2 + 75, 10);
         
          
         //draw ball
@@ -280,12 +314,14 @@ public class GameIngame extends BasicGameState {
             }
         } else {
             //pre match confoguration
+            g.setFont(bigFont);
             g.fillOval(app.getWidth()/2 - ball1.getWidth()/2, app.getHeight()/2 - ball1.getWidth()/2, ball1.getWidth(), ball1.getWidth());
             String str = "Press 'Enter' to start.";
             g.getFont().drawString(app.getWidth()/2 - g.getFont().getWidth(str)/2, .25f * app.getHeight(), str, Color.green);
             
         }
-        if(gameEnd){            
+        if(gameEnd){
+            g.setFont(bigFont);
             if(score1==10){
                 String winnerMsg = player1Name+"has won ! ! !\nCongratulations !";
                 g.drawString(winnerMsg, app.getWidth()/4-g.getFont().getWidth(winnerMsg)/2, app.getHeight()/2-g.getFont().getHeight(winnerMsg)/2);
@@ -349,34 +385,6 @@ public class GameIngame extends BasicGameState {
             }
         }  
 }  
-    
-    public void keyPressed(int i, char c){
-        if(i == 28){
-            if (gameEnd){
-                //restart game
-                resetGame();
-            } else if (ballIsStopped){                
-                //kick-off
-                time = System.currentTimeMillis();
-                ballIsStopped = false;
-                switch (lastScorer) {
-                    case 0:
-                        if(Math.random() <= .5){
-                            ballVelX = 1;
-                        } else {
-                            ballVelX = -1;
-                        }   break;
-                    case -1:
-                        ballVelX = 1;
-                        break;
-                    default:
-                        ballVelX = -1;
-                        break;
-                }
-            }
-        }       
-      
-    }
     
     private void p(Object o){
         System.out.println(o);
