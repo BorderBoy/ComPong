@@ -81,7 +81,7 @@ public class GameIngame extends BasicGameState {
 
     @Override
     public int getID(){
-        return 100;
+        return GameMain.GAMESTATE_INGAME;
     }
     
     @Override
@@ -120,7 +120,7 @@ public class GameIngame extends BasicGameState {
         bounces = 0;
         
         Font awtFont = new Font("Consolas", Font.PLAIN, 20);
-        scoreFont = new TrueTypeFont(awtFont.deriveFont(40f), false);
+        scoreFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
         nameFont = new TrueTypeFont(awtFont.deriveFont(30f), false);
         bigFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
     }

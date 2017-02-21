@@ -17,6 +17,9 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 public class GameMain extends StateBasedGame{
 
+    public static final int GAMESTATE_MAINMENU = 0;
+    public static final int GAMESTATE_INGAME = 100;
+    
      private AppGameContainer app;
      private Input input;
     
@@ -31,7 +34,7 @@ public class GameMain extends StateBasedGame{
         
         addState(new GameMainMenu());
         addState(new GameIngame(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh"));
-        enterState(0);
+        enterState(GAMESTATE_MAINMENU);
         
     }
     
@@ -41,7 +44,7 @@ public class GameMain extends StateBasedGame{
         }
         
         if(i == Input.KEY_R){
-            enterState(100);
+            enterState(GAMESTATE_INGAME);
         }
     }       
     
