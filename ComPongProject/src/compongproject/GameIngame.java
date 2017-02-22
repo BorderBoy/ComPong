@@ -7,21 +7,13 @@ package compongproject;
 
 import java.awt.Font;
 import java.io.File;
-import net.java.games.input.ControllerEnvironment;
-import org.lwjgl.input.Controller;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
-//import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -67,9 +59,10 @@ public class GameIngame extends BasicGameState {
     private TrueTypeFont scoreFont;
     private TrueTypeFont nameFont;
     private TrueTypeFont bigFont;
+    private GameMain game;
 
     
-    public GameIngame(int bat1S, int bat2S, int ball1S, int ball2S, String name1, String name2) {
+    public GameIngame(int bat1S, int bat2S, int ball1S, int ball2S, String name1, String name2, GameMain gm) {
         //super("ComPong");
         bat1Skin = bat1S;
         bat2Skin = bat2S;
@@ -77,6 +70,8 @@ public class GameIngame extends BasicGameState {
         ball2Skin = ball2S;
         player1Name = name1;
         player2Name = name2;
+        
+        game = gm;
     }
 
     @Override
@@ -90,10 +85,10 @@ public class GameIngame extends BasicGameState {
             app = (AppGameContainer) gc;
 	}
         
-       //app.setMinimumLogicUpdateInterval(30);
+//       app.setMinimumLogicUpdateInterval(30);
        
         //make cursor invisible
-        app.setMouseGrabbed(true);
+        //app.setMouseGrabbed(true);
         app.setShowFPS(true);
         shapeColor = Color.white;
         input = app.getInput();
@@ -119,7 +114,7 @@ public class GameIngame extends BasicGameState {
         gameEnd=false;
         bounces = 0;
         
-        Font awtFont = new Font("Consolas", Font.PLAIN, 20);
+        Font awtFont = new Font("GrilledCheese BTN Toasted", Font.PLAIN, 20);
         scoreFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
         nameFont = new TrueTypeFont(awtFont.deriveFont(30f), false);
         bigFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
@@ -323,11 +318,11 @@ public class GameIngame extends BasicGameState {
         if(gameEnd){
             g.setFont(bigFont);
             if(score1==10){
-                String winnerMsg = player1Name+"has won ! ! !\nCongratulations !";
+                String winnerMsg = player1Name + " has won ! ! !Congratulations !";
                 g.drawString(winnerMsg, app.getWidth()/4-g.getFont().getWidth(winnerMsg)/2, app.getHeight()/2-g.getFont().getHeight(winnerMsg)/2);
             }
             else {
-                String winnerMsg = player2Name+"has won ! ! !\nCongratulations !";
+                String winnerMsg = player2Name+" has won ! ! !Congratulations !";
                 g.drawString(winnerMsg, 3*app.getWidth()/4-g.getFont().getWidth(winnerMsg)/2, app.getHeight()/2-g.getFont().getHeight(winnerMsg)/2);
             }
         }

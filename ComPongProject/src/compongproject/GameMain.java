@@ -5,6 +5,8 @@
  */
 package compongproject;
 
+import java.io.File;
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
@@ -20,8 +22,8 @@ public class GameMain extends StateBasedGame{
     public static final int GAMESTATE_MAINMENU = 0;
     public static final int GAMESTATE_INGAME = 100;
     
-     private AppGameContainer app;
-     private Input input;
+    private AppGameContainer app;
+    private Input input;
     
     public GameMain(String name) {
         super(name);
@@ -29,23 +31,48 @@ public class GameMain extends StateBasedGame{
 
     @Override
     public void initStatesList(GameContainer gc) throws SlickException {
+        
         app = (AppGameContainer) gc;
         input = app.getInput();
         
-        addState(new GameMainMenu());
-        addState(new GameIngame(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh"));
-        enterState(GAMESTATE_MAINMENU);
+      
         
+        addState(new GameMainMenu(this));
+        addState(new GameIngame(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh", this));
+        changeState(GAMESTATE_MAINMENU);
+        
+      
     }
     
+    @Override
     public void keyPressed(int i, char c){
-        if(i == Input.KEY_ESCAPE){
-            app.exit();
-        }
         
-        if(i == Input.KEY_R){
-            enterState(GAMESTATE_INGAME);
+        switch(i){
+            case Input.KEY_ESCAPE:
+                app.exit();
+                break;
+            case Input.KEY_R:
+                changeState(GAMESTATE_INGAME);
+                break;
+            default:              
         }
     }       
+    
+    public void changeState(int i){
+        enterState(i);
+        switch(i){
+            case GAMESTATE_INGAME: 
+                app.setMouseGrabbed(true);
+                break;
+            default: 
+                app.setMouseGrabbed(false);
+        }
+    }
+    
+    private void p(Object o){
+        
+        
+        System.out.println(o);
+    }
     
 }

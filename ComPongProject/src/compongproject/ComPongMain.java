@@ -5,15 +5,11 @@
  */
 package compongproject;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.tests.GUITest;
-import org.newdawn.slick.tests.InputTest;
 
 /**
  *
