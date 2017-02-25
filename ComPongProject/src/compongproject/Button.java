@@ -20,7 +20,7 @@ import org.newdawn.slick.state.StateBasedGame;
  *
  * @author Uli
  */
-public class Button extends MouseOverArea{
+public class Button extends MouseOverArea {
     
     String label;
     Image image;
@@ -28,12 +28,14 @@ public class Button extends MouseOverArea{
     int x;
     int y;
     
+    int id;
+    
     GameMain game;
     
     Color color;
     TrueTypeFont font;
             
-    public Button(GUIContext container, Image img, int x, int y, String s, GameMain g) {
+    public Button(GUIContext container, Image img, int x, int y, String s, GameMain g, int id) {
         super(container,img, x, y);
         
         label = s;
@@ -42,11 +44,16 @@ public class Button extends MouseOverArea{
         this.x = x;
         this.y = y;
         
+        this.id = id;
+        
         game = g; 
         
-       color = new Color(Color.white);
+        
+        color = new Color(Color.white);
         
         font = new TrueTypeFont(new Font("GrilledCheese BTN Toasted", Font.PLAIN, 50), false);
+        
+        setMouseOverColor(Color.green);
     }
     
     public void render(GameContainer gc, Graphics g){
@@ -64,7 +71,15 @@ public class Button extends MouseOverArea{
     @Override
     public void mouseReleased(int button,int x,int y){
         if(this.isMouseOver()){
-            game.changeState(GameMain.GAMESTATE_INGAME);
+            game.buttonClicked(id);
         }
+    }
+    
+    @Override
+    public void mouseClicked(int button, int x, int y, int clickCount) {
+    }
+
+    private void p(Object o) {
+        System.out.println(o);
     }
 }

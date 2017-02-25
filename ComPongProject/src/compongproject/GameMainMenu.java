@@ -51,7 +51,7 @@ public class GameMainMenu extends BasicGameState {
         app.setMouseGrabbed(false);
         imgButtonGameIngame = new Image(new File("").getAbsolutePath() + "/TestButton.png"); 
         area = new MouseOverArea(gc,imgButtonGameIngame, new Rectangle(800,660,200,100));
-        buttonGameIngame = new Button(app,imgButtonGameIngame,app.getWidth()/2 - imgButtonGameIngame.getWidth()/2, app.getHeight()/2 - imgButtonGameIngame.getHeight()/2,"Start", game);
+        buttonGameIngame = new Button(app,imgButtonGameIngame,app.getWidth()/2 - imgButtonGameIngame.getWidth()/2, app.getHeight()/2 - imgButtonGameIngame.getHeight()/2,"Start", game, GameMain.BUTTON_GAMEMAINMENU_GAMEINGAME);
         
         p(app.isMouseGrabbed());
           Mouse.setGrabbed(false);
@@ -73,9 +73,9 @@ public class GameMainMenu extends BasicGameState {
 //        if(area.isMouseOver()&&input.isMousePressed(0)){
 //            game.changeState(GameMain.GAMESTATE_INGAME);
 //        }
-        
-
-
+        if(input.isKeyDown(Input.KEY_SPACE)){
+            game.changeState(GameMain.GAMESTATE_INGAME);
+        }
     }
     
     private void p(Object o){

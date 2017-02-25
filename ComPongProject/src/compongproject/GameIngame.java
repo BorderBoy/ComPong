@@ -7,10 +7,12 @@ package compongproject;
 
 import java.awt.Font;
 import java.io.File;
+import java.util.stream.Stream;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
@@ -59,7 +61,12 @@ public class GameIngame extends BasicGameState {
     private TrueTypeFont scoreFont;
     private TrueTypeFont nameFont;
     private TrueTypeFont bigFont;
+    private TrueTypeFont endScoreFont;
     private GameMain game;
+    private Button buttonGameMainMenu;
+    private Button buttonRematch;
+    private Image imgButtonGameMainMenu;
+    private Image imgButtonRematch;
 
     
     public GameIngame(int bat1S, int bat2S, int ball1S, int ball2S, String name1, String name2, GameMain gm) {
@@ -118,6 +125,13 @@ public class GameIngame extends BasicGameState {
         scoreFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
         nameFont = new TrueTypeFont(awtFont.deriveFont(30f), false);
         bigFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
+        endScoreFont = new TrueTypeFont(awtFont.deriveFont(85f), false); 
+        
+        
+        imgButtonGameMainMenu = new Image(new File("").getAbsolutePath() + "/TestButton.png");
+        imgButtonRematch = new Image(new File("").getAbsolutePath() + "/TestButton.png");
+        buttonGameMainMenu = new Button(app,imgButtonGameMainMenu, app.getWidth()/2 - imgButtonGameMainMenu.getWidth() - 50, 3*(app.getHeight()/4), "Quit to title", game, GameMain.BUTTON_GAMEINGAME_GAMEMAINMENU);
+        buttonRematch = new Button(app, imgButtonRematch, app.getWidth()/2 + 50, 3*(app.getHeight()/4), "Rematch", game, GameMain.BUTTON_GAMEINGAME_REMATCH);
     }
  
     @Override
@@ -160,10 +174,7 @@ public class GameIngame extends BasicGameState {
         }
         
         if(input.isKeyDown(Input.KEY_ENTER)){
-             if (gameEnd){
-                //restart game
-                resetGame();
-            } else if (ballIsStopped){                
+            if (ballIsStopped && !gameEnd){                
                 //kick-off
                 time = System.currentTimeMillis();
                 ballIsStopped = false;
@@ -262,6 +273,7 @@ public class GameIngame extends BasicGameState {
         //game reset
         if(score1 > 9 || score2 > 9){
             gameEnd = true;    
+            game.setMouseVisibility(true);
             ballIsStopped = true; 
             
         }
@@ -277,6 +289,7 @@ public class GameIngame extends BasicGameState {
     
     @Override
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+        
         
         g.setColor(shapeColor);
         
@@ -298,6 +311,9 @@ public class GameIngame extends BasicGameState {
         g.drawString(player1Name, app.getWidth()/2 - 75 - g.getFont().getWidth(player1Name) , 10);
         g.drawString(player2Name, app.getWidth()/2 + 75, 10);
         
+        
+        
+        
          
         //draw ball
         if(!ballIsStopped){
@@ -311,26 +327,36 @@ public class GameIngame extends BasicGameState {
             //pre match confoguration
             g.setFont(bigFont);
             g.fillOval(app.getWidth()/2 - ball1.getWidth()/2, app.getHeight()/2 - ball1.getWidth()/2, ball1.getWidth(), ball1.getWidth());
-            String str = "Press 'Enter' to start.";
-            g.getFont().drawString(app.getWidth()/2 - g.getFont().getWidth(str)/2, .25f * app.getHeight(), str, Color.green);
+            if(!gameEnd){
+                String str = "Press 'Enter' to start.";
+                g.getFont().drawString(app.getWidth()/2 - g.getFont().getWidth(str)/2, .25f * app.getHeight(), str, Color.green);
+            }
             
         }
+        
         if(gameEnd){
+            //render button
+            buttonGameMainMenu.render(app, g);
+            buttonRematch.render(app, g);
             g.setFont(bigFont);
-            if(score1==10){
-                String winnerMsg = player1Name + " has won ! ! !Congratulations !";
-                g.drawString(winnerMsg, app.getWidth()/4-g.getFont().getWidth(winnerMsg)/2, app.getHeight()/2-g.getFont().getHeight(winnerMsg)/2);
+            String msg = " has won ! ! Congratulations ! !";
+            if(score1==1){
+                String winnerMsg = player1Name + msg;
+                g.drawString(winnerMsg, app.getWidth()/2-g.getFont().getWidth(winnerMsg)/2, app.getHeight()/4);
+            } else {
+                String winnerMsg = player2Name + msg;
+                g.drawString(winnerMsg, app.getWidth()/2-g.getFont().getWidth(winnerMsg)/2, app.getHeight()/4);
             }
-            else {
-                String winnerMsg = player2Name+" has won ! ! !Congratulations !";
-                g.drawString(winnerMsg, 3*app.getWidth()/4-g.getFont().getWidth(winnerMsg)/2, app.getHeight()/2-g.getFont().getHeight(winnerMsg)/2);
-            }
+            g.setFont(endScoreFont);
+            g.drawString(score1+"", app.getWidth()/2 - g.getFont().getWidth(""+score1) - 200, app.getHeight()/2 - g.getFont().getHeight(""+score1)/2);
+            g.drawString(score2+"", app.getWidth()/2 + 200, app.getHeight()/2 - g.getFont().getHeight(""+score2)/2);
+            
         }
     }
     
     //reset ball
     private void resetBall(int scorer){
-        if (scorer == 1){
+        if (scorer == 10){
             score2++;
         } else {
             score1++;
@@ -346,7 +372,7 @@ public class GameIngame extends BasicGameState {
         bounces = 0;
     }
     
-    private void resetGame(){        
+    public void resetGame(){        
         score2 = 0;
         score1 = 0;            
         ballOffsetX = 0;
@@ -381,7 +407,14 @@ public class GameIngame extends BasicGameState {
         }  
 }  
     
+    @Override
+    public void leave(GameContainer container, StateBasedGame sbg){
+        resetGame();
+    }
+    
     private void p(Object o){
         System.out.println(o);
     }
+    
+    
 }

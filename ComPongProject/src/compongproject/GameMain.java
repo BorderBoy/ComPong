@@ -11,6 +11,7 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 /**
@@ -22,8 +23,14 @@ public class GameMain extends StateBasedGame{
     public static final int GAMESTATE_MAINMENU = 0;
     public static final int GAMESTATE_INGAME = 100;
     
+    public static final int BUTTON_GAMEMAINMENU_GAMEINGAME = 0;
+    public static final int BUTTON_GAMEINGAME_GAMEMAINMENU = 1;
+    public static final int BUTTON_GAMEINGAME_REMATCH = 2;
+    
     private AppGameContainer app;
     private Input input;
+    private GameIngame gameIngame;
+    private GameMainMenu gameMainMenu;
     
     public GameMain(String name) {
         super(name);
@@ -34,14 +41,19 @@ public class GameMain extends StateBasedGame{
         
         app = (AppGameContainer) gc;
         input = app.getInput();
-        
       
+        gameIngame = new GameIngame(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh", this);
+        gameMainMenu = new GameMainMenu(this);
         
-        addState(new GameMainMenu(this));
-        addState(new GameIngame(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh", this));
+        addState(gameMainMenu);
+        addState(gameIngame);
         changeState(GAMESTATE_MAINMENU);
         
       
+    }
+    
+    public void setMouseVisibility(boolean b){
+        app.setMouseGrabbed(!b);
     }
     
     @Override
@@ -66,6 +78,19 @@ public class GameMain extends StateBasedGame{
                 break;
             default: 
                 app.setMouseGrabbed(false);
+        }
+    }
+    
+    public void buttonClicked(int id){
+        switch(id){
+            case BUTTON_GAMEMAINMENU_GAMEINGAME:
+                changeState(GAMESTATE_INGAME);
+                break;
+            case BUTTON_GAMEINGAME_GAMEMAINMENU:
+                changeState(GAMESTATE_MAINMENU);
+                break;
+            case BUTTON_GAMEINGAME_REMATCH:
+                gameIngame.resetGame();
         }
     }
     
