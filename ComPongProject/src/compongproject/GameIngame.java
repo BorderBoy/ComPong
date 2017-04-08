@@ -6,7 +6,10 @@
 package compongproject;
 
 import java.awt.Font;
+import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Color;
@@ -15,6 +18,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -67,6 +71,9 @@ public class GameIngame extends BasicGameState {
     private Button buttonRematch;
     private Image imgButtonGameMainMenu;
     private Image imgButtonRematch;
+    private Image imgWhiteScreen;
+    private float flashValue;
+    private Sound sndBUTTON_GAMEINGAME_REMATCH; 
 
     
     public GameIngame(int bat1S, int bat2S, int ball1S, int ball2S, String name1, String name2, GameMain gm) {
@@ -120,6 +127,7 @@ public class GameIngame extends BasicGameState {
         baseBallSpeedY = 1f;
         gameEnd=false;
         bounces = 0;
+        flashValue = -1;
         
         Font awtFont = new Font("GrilledCheese BTN Toasted", Font.PLAIN, 20);
         scoreFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
@@ -127,15 +135,20 @@ public class GameIngame extends BasicGameState {
         bigFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
         endScoreFont = new TrueTypeFont(awtFont.deriveFont(85f), false); 
         
-        
         imgButtonGameMainMenu = new Image(new File("").getAbsolutePath() + "/TestButton.png");
         imgButtonRematch = new Image(new File("").getAbsolutePath() + "/TestButton.png");
+        imgWhiteScreen = new Image(new File("").getAbsolutePath() + "/WhiteScreen.png");
+        
         buttonGameMainMenu = new Button(app,imgButtonGameMainMenu, app.getWidth()/2 - imgButtonGameMainMenu.getWidth() - 50, 3*(app.getHeight()/4), "Quit to title", game, GameMain.BUTTON_GAMEINGAME_GAMEMAINMENU);
         buttonRematch = new Button(app, imgButtonRematch, app.getWidth()/2 + 50, 3*(app.getHeight()/4), "Rematch", game, GameMain.BUTTON_GAMEINGAME_REMATCH);
+        
+        sndBUTTON_GAMEINGAME_REMATCH = new Sound("/sndCrispWruop.ogg");
+        
     }
+    
  
     @Override
-    public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
+    public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {  
         float incRate = .4f;
         float logSpeed = (float) (1-incRate+Math.log(bounces+Math.E)*incRate);
         
@@ -194,6 +207,10 @@ public class GameIngame extends BasicGameState {
                 }
             }
         }
+        
+       if(input.isKeyDown(Input.KEY_SLASH)){
+           score1 = 50;
+       }
         
         
         //Ball movement
@@ -350,7 +367,17 @@ public class GameIngame extends BasicGameState {
             g.setFont(endScoreFont);
             g.drawString(score1+"", app.getWidth()/2 - g.getFont().getWidth(""+score1) - 200, app.getHeight()/2 - g.getFont().getHeight(""+score1)/2);
             g.drawString(score2+"", app.getWidth()/2 + 200, app.getHeight()/2 - g.getFont().getHeight(""+score2)/2);
-            
+        }
+        
+        if(flashValue >= 0){
+            imgWhiteScreen.setAlpha(1 - flashValue/100);
+            imgWhiteScreen.drawCentered(app.getWidth()/2, app.getHeight()/2);
+            flashValue += 0.3f;
+        } 
+        
+        if (flashValue > 100){
+            flashValue = -1;
+            imgWhiteScreen.setAlpha(0);
         }
     }
     
@@ -381,6 +408,7 @@ public class GameIngame extends BasicGameState {
         ballVelY = 0;
         lastScorer = 0;
         gameEnd = false;
+        game.setMouseVisibility(false);
     }     
         
     @Override
@@ -405,8 +433,21 @@ public class GameIngame extends BasicGameState {
                     break;
             }
         }  
-}  
+    }
+   
     
+    public void flash(){
+//        sndBUTTON_GAMEINGAME_REMATCH.playAt((float) Math.cos(flashValue*3.6)*20, 0, (float) Math.sin(flashValue*3.6)*20);
+        sndBUTTON_GAMEINGAME_REMATCH.play();
+        
+        try {
+            Thread.sleep(1950);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GameMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        flashValue = 0; 
+    }
     @Override
     public void leave(GameContainer container, StateBasedGame sbg){
         resetGame();

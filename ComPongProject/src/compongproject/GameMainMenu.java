@@ -30,7 +30,9 @@ public class GameMainMenu extends BasicGameState {
     private Input input;
     private MouseOverArea area;
     private Button buttonGameIngame;
+    private Button buttonQuit;
     private Image imgButtonGameIngame;
+    private Image imgButtonQuit; 
     private GameContainer app;
     private GameMain game;
     
@@ -49,12 +51,16 @@ public class GameMainMenu extends BasicGameState {
         app = gc;
         input = app.getInput();
         app.setMouseGrabbed(false);
-        imgButtonGameIngame = new Image(new File("").getAbsolutePath() + "/TestButton.png"); 
-        area = new MouseOverArea(gc,imgButtonGameIngame, new Rectangle(800,660,200,100));
-        buttonGameIngame = new Button(app,imgButtonGameIngame,app.getWidth()/2 - imgButtonGameIngame.getWidth()/2, app.getHeight()/2 - imgButtonGameIngame.getHeight()/2,"Start", game, GameMain.BUTTON_GAMEMAINMENU_GAMEINGAME);
         
-        p(app.isMouseGrabbed());
-          Mouse.setGrabbed(false);
+        imgButtonGameIngame = new Image(new File("").getAbsolutePath() + "/TestButton.png"); 
+        imgButtonQuit = new Image(new File("").getAbsolutePath() + "/TestButton.png"); 
+        
+        //area = new MouseOverArea(gc,imgButtonGameIngame, new Rectangle(800,660,200,100));
+        buttonGameIngame = new Button(app,imgButtonGameIngame,app.getWidth()/2 - imgButtonGameIngame.getWidth()/2, app.getHeight()/2 - imgButtonGameIngame.getHeight() - 20 ,"Start", game, GameMain.BUTTON_GAMEMAINMENU_GAMEINGAME);
+        buttonQuit = new Button(app,imgButtonQuit,app.getWidth()/2 - imgButtonQuit.getWidth()/2, app.getHeight()/2 + 20,"Quit", game, GameMain.BUTTON_GAMEMAINMENU_QUIT); 
+        
+ 
+        
         
         
     }
@@ -65,6 +71,7 @@ public class GameMainMenu extends BasicGameState {
         g.fillRect(0, 0, 10, 10);        
         
         buttonGameIngame.render(gc, g);
+        buttonQuit.render(gc, g);
        
     }
 
@@ -73,6 +80,9 @@ public class GameMainMenu extends BasicGameState {
 //        if(area.isMouseOver()&&input.isMousePressed(0)){
 //            game.changeState(GameMain.GAMESTATE_INGAME);
 //        }
+
+        Mouse.setGrabbed(false);
+
         if(input.isKeyDown(Input.KEY_SPACE)){
             game.changeState(GameMain.GAMESTATE_INGAME);
         }

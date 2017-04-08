@@ -6,6 +6,9 @@
 package compongproject;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
@@ -13,6 +16,10 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.Sound;
+import org.newdawn.slick.openal.Audio;
+import org.newdawn.slick.openal.AudioLoader;
+import org.newdawn.slick.util.ResourceLoader;
 
 /**
  *
@@ -26,11 +33,17 @@ public class GameMain extends StateBasedGame{
     public static final int BUTTON_GAMEMAINMENU_GAMEINGAME = 0;
     public static final int BUTTON_GAMEINGAME_GAMEMAINMENU = 1;
     public static final int BUTTON_GAMEINGAME_REMATCH = 2;
+    public static final int BUTTON_GAMEMAINMENU_QUIT = 3;
     
     private AppGameContainer app;
     private Input input;
     private GameIngame gameIngame;
     private GameMainMenu gameMainMenu;
+    
+    private Sound sndBUTTON_GAMEMAINMENU_GAMEINGAME; 
+    private Sound sndBUTTON_GAMEMAINMENU_QUIT; 
+    private Sound sndBUTTON_GAMEINGAME_REMATCH; 
+    private Sound sndBUTTON_GAMEINGAME_GAMEMAINMENU; 
     
     public GameMain(String name) {
         super(name);
@@ -44,6 +57,11 @@ public class GameMain extends StateBasedGame{
       
         gameIngame = new GameIngame(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh", this);
         gameMainMenu = new GameMainMenu(this);
+        
+        sndBUTTON_GAMEMAINMENU_GAMEINGAME = new Sound("/sndCrisp1.ogg");
+        sndBUTTON_GAMEMAINMENU_QUIT = new Sound("/sndCrisp2.ogg");
+        sndBUTTON_GAMEINGAME_REMATCH = new Sound("/sndCrispWruop.ogg");
+        sndBUTTON_GAMEINGAME_GAMEMAINMENU = new Sound("/sndCrispReverse.ogg");
         
         addState(gameMainMenu);
         addState(gameIngame);
@@ -84,13 +102,38 @@ public class GameMain extends StateBasedGame{
     public void buttonClicked(int id){
         switch(id){
             case BUTTON_GAMEMAINMENU_GAMEINGAME:
+                sndBUTTON_GAMEMAINMENU_GAMEINGAME.play();
+        
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GameMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        
                 changeState(GAMESTATE_INGAME);
                 break;
+                
             case BUTTON_GAMEINGAME_GAMEMAINMENU:
+                sndBUTTON_GAMEINGAME_GAMEMAINMENU.play();
                 changeState(GAMESTATE_MAINMENU);
                 break;
+                
             case BUTTON_GAMEINGAME_REMATCH:
+                gameIngame.flash();
                 gameIngame.resetGame();
+                break;
+                
+            case BUTTON_GAMEMAINMENU_QUIT:
+                sndBUTTON_GAMEMAINMENU_QUIT.play();
+        {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(GameMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+                app.exit();
+                
         }
     }
     
