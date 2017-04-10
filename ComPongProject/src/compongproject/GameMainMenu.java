@@ -15,6 +15,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.gui.MouseOverArea;
@@ -33,6 +34,8 @@ public class GameMainMenu extends BasicGameState {
     private Button buttonQuit;
     private Image imgButtonGameIngame;
     private Image imgButtonQuit; 
+    private Sound sndButtonGameIngame;
+    private Sound sndButtonQuit;
     private GameContainer app;
     private GameMain game;
     
@@ -55,13 +58,15 @@ public class GameMainMenu extends BasicGameState {
         imgButtonGameIngame = new Image(new File("").getAbsolutePath() + "/TestButton.png"); 
         imgButtonQuit = new Image(new File("").getAbsolutePath() + "/TestButton.png"); 
         
+        sndButtonGameIngame = new Sound("/sndCrisp1.ogg");
+        sndButtonQuit = new Sound("/sndCrisp2.ogg");
+        
         //area = new MouseOverArea(gc,imgButtonGameIngame, new Rectangle(800,660,200,100));
         buttonGameIngame = new Button(app,imgButtonGameIngame,app.getWidth()/2 - imgButtonGameIngame.getWidth()/2, app.getHeight()/2 - imgButtonGameIngame.getHeight() - 20 ,"Start", game, GameMain.BUTTON_GAMEMAINMENU_GAMEINGAME);
         buttonQuit = new Button(app,imgButtonQuit,app.getWidth()/2 - imgButtonQuit.getWidth()/2, app.getHeight()/2 + 20,"Quit", game, GameMain.BUTTON_GAMEMAINMENU_QUIT); 
         
- 
-        
-        
+        buttonGameIngame.setMouseDownSound(sndButtonGameIngame);
+        buttonQuit.setMouseDownSound(sndButtonQuit);
         
     }
 

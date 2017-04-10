@@ -25,7 +25,7 @@ import org.newdawn.slick.util.ResourceLoader;
  *
  * @author Uli
  */
-public class GameMain extends StateBasedGame{
+public class GameMain extends StateBasedGame {
 
     public static final int GAMESTATE_MAINMENU = 0;
     public static final int GAMESTATE_INGAME = 100;
@@ -40,13 +40,17 @@ public class GameMain extends StateBasedGame{
     private GameIngame gameIngame;
     private GameMainMenu gameMainMenu;
     
+    private boolean vSync;
+    
     private Sound sndBUTTON_GAMEMAINMENU_GAMEINGAME; 
     private Sound sndBUTTON_GAMEMAINMENU_QUIT; 
     private Sound sndBUTTON_GAMEINGAME_REMATCH; 
     private Sound sndBUTTON_GAMEINGAME_GAMEMAINMENU; 
     
-    public GameMain(String name) {
+    public GameMain(String name, boolean vSync) {
         super(name);
+        
+        this.vSync = vSync;
     }
 
     @Override
@@ -58,16 +62,12 @@ public class GameMain extends StateBasedGame{
         gameIngame = new GameIngame(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh", this);
         gameMainMenu = new GameMainMenu(this);
         
-        sndBUTTON_GAMEMAINMENU_GAMEINGAME = new Sound("/sndCrisp1.ogg");
-        sndBUTTON_GAMEMAINMENU_QUIT = new Sound("/sndCrisp2.ogg");
-        sndBUTTON_GAMEINGAME_REMATCH = new Sound("/sndCrispWruop.ogg");
-        sndBUTTON_GAMEINGAME_GAMEMAINMENU = new Sound("/sndCrispReverse.ogg");
-        
         addState(gameMainMenu);
         addState(gameIngame);
         changeState(GAMESTATE_MAINMENU);
         
-      
+        app.setVSync(vSync);
+        
     }
     
     public void setMouseVisibility(boolean b){
@@ -102,7 +102,6 @@ public class GameMain extends StateBasedGame{
     public void buttonClicked(int id){
         switch(id){
             case BUTTON_GAMEMAINMENU_GAMEINGAME:
-                sndBUTTON_GAMEMAINMENU_GAMEINGAME.play();
         
                 try {
                     Thread.sleep(200);
@@ -114,7 +113,6 @@ public class GameMain extends StateBasedGame{
                 break;
                 
             case BUTTON_GAMEINGAME_GAMEMAINMENU:
-                sndBUTTON_GAMEINGAME_GAMEMAINMENU.play();
                 changeState(GAMESTATE_MAINMENU);
                 break;
                 
@@ -124,14 +122,13 @@ public class GameMain extends StateBasedGame{
                 break;
                 
             case BUTTON_GAMEMAINMENU_QUIT:
-                sndBUTTON_GAMEMAINMENU_QUIT.play();
-        {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(GameMain.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GameMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        
                 app.exit();
                 
         }

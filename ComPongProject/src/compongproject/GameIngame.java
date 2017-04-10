@@ -50,6 +50,7 @@ public class GameIngame extends BasicGameState {
     private int vSpacingToBat;
     private int score1;
     private int score2;
+    private int maxScore;
     private int lastScorer;
     private float baseBatSpeed;
     private float baseBallSpeedX;
@@ -72,8 +73,10 @@ public class GameIngame extends BasicGameState {
     private Image imgButtonGameMainMenu;
     private Image imgButtonRematch;
     private Image imgWhiteScreen;
+    private Sound sndButtonRematch; 
+    private Sound sndButtonGameMainMenu;
     private float flashValue;
-    private Sound sndBUTTON_GAMEINGAME_REMATCH; 
+    
 
     
     public GameIngame(int bat1S, int bat2S, int ball1S, int ball2S, String name1, String name2, GameMain gm) {
@@ -121,6 +124,7 @@ public class GameIngame extends BasicGameState {
         ballOffsetY = 0;
         score1 = 0;
         score2 = 0;
+        maxScore = 10;
         lastScorer = 0;
         baseBatSpeed = .7f;
         baseBallSpeedX = 1f;
@@ -139,10 +143,14 @@ public class GameIngame extends BasicGameState {
         imgButtonRematch = new Image(new File("").getAbsolutePath() + "/TestButton.png");
         imgWhiteScreen = new Image(new File("").getAbsolutePath() + "/WhiteScreen.png");
         
+        sndButtonRematch = new Sound("/sndCrispWruop.ogg");
+        sndButtonGameMainMenu = new Sound("/sndCrispReverse.ogg");
+        
         buttonGameMainMenu = new Button(app,imgButtonGameMainMenu, app.getWidth()/2 - imgButtonGameMainMenu.getWidth() - 50, 3*(app.getHeight()/4), "Quit to title", game, GameMain.BUTTON_GAMEINGAME_GAMEMAINMENU);
         buttonRematch = new Button(app, imgButtonRematch, app.getWidth()/2 + 50, 3*(app.getHeight()/4), "Rematch", game, GameMain.BUTTON_GAMEINGAME_REMATCH);
         
-        sndBUTTON_GAMEINGAME_REMATCH = new Sound("/sndCrispWruop.ogg");
+        buttonRematch.setMouseDownSound(sndButtonRematch);
+        buttonGameMainMenu.setMouseDownSound(sndButtonGameMainMenu);
         
     }
     
@@ -162,7 +170,6 @@ public class GameIngame extends BasicGameState {
         
         
         //Controls
-        
         if((input.isKeyDown(Input.KEY_W)) && !ballIsStopped){
             if(bat1Offset > -app.getHeight()/2 + bat1.getHeight()/2){
                 bat1Offset = bat1Offset - batSpeed;
@@ -208,6 +215,7 @@ public class GameIngame extends BasicGameState {
             }
         }
         
+        //cheat: left gets 50 goals
        if(input.isKeyDown(Input.KEY_SLASH)){
            score1 = 50;
        }
@@ -288,7 +296,7 @@ public class GameIngame extends BasicGameState {
         }
         
         //game reset
-        if(score1 > 9 || score2 > 9){
+        if(score1 >= maxScore || score2 >= maxScore){
             gameEnd = true;    
             game.setMouseVisibility(true);
             ballIsStopped = true; 
@@ -352,12 +360,12 @@ public class GameIngame extends BasicGameState {
         }
         
         if(gameEnd){
-            //render button
+            //render buttons
             buttonGameMainMenu.render(app, g);
             buttonRematch.render(app, g);
             g.setFont(bigFont);
             String msg = " has won ! ! Congratulations ! !";
-            if(score1==1){
+            if(score1 > score2){
                 String winnerMsg = player1Name + msg;
                 g.drawString(winnerMsg, app.getWidth()/2-g.getFont().getWidth(winnerMsg)/2, app.getHeight()/4);
             } else {
@@ -383,7 +391,7 @@ public class GameIngame extends BasicGameState {
     
     //reset ball
     private void resetBall(int scorer){
-        if (scorer == 10){
+        if (scorer == 1){
             score2++;
         } else {
             score1++;
@@ -438,7 +446,6 @@ public class GameIngame extends BasicGameState {
     
     public void flash(){
 //        sndBUTTON_GAMEINGAME_REMATCH.playAt((float) Math.cos(flashValue*3.6)*20, 0, (float) Math.sin(flashValue*3.6)*20);
-        sndBUTTON_GAMEINGAME_REMATCH.play();
         
         try {
             Thread.sleep(1950);

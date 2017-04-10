@@ -19,15 +19,37 @@ public class ComPongMain {
     
     
     public static void main(String[] args) throws LWJGLException {
-        try {
-            //AppGameContainer container = new AppGameContainer(new GameIngame(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh"));
-            AppGameContainer container = new AppGameContainer(new GameMain("ComPong"));
-            DisplayMode mode = Display.getDesktopDisplayMode();
-            container.setDisplayMode(mode.getWidth(),mode.getHeight(),true);
-            container.start();
-            //yo
-        } catch (SlickException e) {
-                e.printStackTrace();
+        
+        boolean vSyncArg = false;
+        
+        if (args.length == 1){
+            if(args[0].equals("true") || args[0].equals("false")){
+                
+                if (args[0].equals("true")) {
+                    vSyncArg = true;
+                } else {
+                    vSyncArg = false;
+                }
+                
+                try {
+                //AppGameContainer container = new AppGameContainer(new GameIngame(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh"));
+
+                AppGameContainer container = new AppGameContainer(new GameMain("ComPong", vSyncArg));
+                DisplayMode mode = Display.getDesktopDisplayMode();
+                container.setDisplayMode(mode.getWidth(),mode.getHeight(),true);
+                container.start();
+                //yo
+                
+                } catch (SlickException e) {
+                        e.printStackTrace();
+                }
+                
+            } else {
+                System.err.println("Argument" + args[0] + " must be a boolean.");
+            }
+            
+        } else {
+            System.err.println("You must give exactly one Argument.");
         }
 
     }

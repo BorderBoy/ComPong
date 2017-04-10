@@ -64,15 +64,15 @@ public class Button extends MouseOverArea {
     }
     
     public void changeFont(String font, int size, Color color){
-         this.font = new TrueTypeFont(new Font(font, Font.PLAIN, size), false);    
+         this.font = new TrueTypeFont(new Font(font, Font.PLAIN, size), false);  
          this.color = color;
     }
     
     @Override
     public void mouseReleased(int button,int x,int y){
-        if(this.isMouseOver()){
+        if(this.isMouseOver() && (button == 0) && !game.getContainer().isMouseGrabbed()){
             game.buttonClicked(id);
-        }
+         }
     }
     
     @Override
