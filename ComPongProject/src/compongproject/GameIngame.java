@@ -6,8 +6,11 @@
 package compongproject;
 
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -132,6 +135,14 @@ public class GameIngame extends BasicGameState {
         gameEnd=false;
         bounces = 0;
         flashValue = -1;
+        
+        
+        try {
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("GrilledCheese BTN Toasted.TTF")));
+        } catch (IOException|FontFormatException e) {
+            //Handle exception
+        }
         
         Font awtFont = new Font("GrilledCheese BTN Toasted", Font.PLAIN, 20);
         scoreFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
