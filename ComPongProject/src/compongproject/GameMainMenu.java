@@ -32,10 +32,13 @@ public class GameMainMenu extends BasicGameState {
     private MouseOverArea area;
     private Button buttonGameIngame;
     private Button buttonQuit;
+    private Button buttonSettings;
     private Image imgButtonGameIngame;
     private Image imgButtonQuit; 
+    private Image imgButtonSettings;
     private Sound sndButtonGameIngame;
     private Sound sndButtonQuit;
+    private Sound sndButtonSettings;
     private GameContainer app;
     private GameMain game;
     
@@ -57,16 +60,22 @@ public class GameMainMenu extends BasicGameState {
         
         imgButtonGameIngame = new Image(new File("").getAbsolutePath() + "/TestButton.png"); 
         imgButtonQuit = new Image(new File("").getAbsolutePath() + "/TestButton.png"); 
+        imgButtonSettings = new Image(new File("").getAbsolutePath() + "/TestButton.png"); 
         
         sndButtonGameIngame = new Sound("/sndCrisp1.ogg");
         sndButtonQuit = new Sound("/sndCrisp2.ogg");
+        sndButtonSettings = new Sound("/sndCrisp1.ogg");
         
         //area = new MouseOverArea(gc,imgButtonGameIngame, new Rectangle(800,660,200,100));
         buttonGameIngame = new Button(app,imgButtonGameIngame,app.getWidth()/2 - imgButtonGameIngame.getWidth()/2, app.getHeight()/2 - imgButtonGameIngame.getHeight() - 20 ,"Start", game, GameMain.BUTTON_GAMEMAINMENU_GAMEINGAME);
-        buttonQuit = new Button(app,imgButtonQuit,app.getWidth()/2 - imgButtonQuit.getWidth()/2, app.getHeight()/2 + 20,"Quit", game, GameMain.BUTTON_GAMEMAINMENU_QUIT); 
+        buttonSettings = new Button(app,imgButtonSettings,app.getWidth()/2 - imgButtonSettings.getWidth()/2, app.getHeight()/2 + 20 ,"Settings", game, GameMain.BUTTON_GAMEMAINMENU_SETTINGS); 
+        buttonQuit = new Button(app,imgButtonQuit,app.getWidth()/2 - imgButtonQuit.getWidth()/2, app.getHeight()/2 + 20 + imgButtonSettings.getHeight() + 40, "Quit", game, GameMain.BUTTON_GAMEMAINMENU_QUIT); 
         
         buttonGameIngame.setMouseDownSound(sndButtonGameIngame);
         buttonQuit.setMouseDownSound(sndButtonQuit);
+        buttonSettings.setMouseDownSound(sndButtonSettings);
+        
+        
         
     }
 
@@ -77,6 +86,7 @@ public class GameMainMenu extends BasicGameState {
         
         buttonGameIngame.render(gc, g);
         buttonQuit.render(gc, g);
+        buttonSettings.render(gc, g);
        
     }
 

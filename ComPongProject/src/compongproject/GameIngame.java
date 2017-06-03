@@ -105,6 +105,7 @@ public class GameIngame extends BasicGameState {
             app = (AppGameContainer) gc;
 	}
         
+        
 //       app.setMinimumLogicUpdateInterval(30);
        
         //make cursor invisible
@@ -148,7 +149,7 @@ public class GameIngame extends BasicGameState {
         scoreFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
         nameFont = new TrueTypeFont(awtFont.deriveFont(30f), false);
         bigFont = new TrueTypeFont(awtFont.deriveFont(50f), false);
-        endScoreFont = new TrueTypeFont(awtFont.deriveFont(85f), false); 
+        endScoreFont = new TrueTypeFont(awtFont.deriveFont(84f), false); 
         
         imgButtonGameMainMenu = new Image(new File("").getAbsolutePath() + "/TestButton.png");
         imgButtonRematch = new Image(new File("").getAbsolutePath() + "/TestButton.png");
@@ -176,7 +177,7 @@ public class GameIngame extends BasicGameState {
                 
         ballSpeedY = baseBallSpeedY * delta * logSpeed;
         
-        batSpeed = baseBatSpeed * delta;
+        batSpeed = baseBatSpeed * delta * logSpeed;
        
         
         
@@ -320,7 +321,23 @@ public class GameIngame extends BasicGameState {
             bounces = 0 ;
             
         }*/
-
+        
+        //update flashValue
+        if (flashValue >= 0){
+            imgWhiteScreen.setAlpha(1 - flashValue/100);
+            if (delta >= 1950){
+                flashValue += (0.3f);
+            } else {
+                flashValue += (0.3f * delta);
+            }
+        }
+        
+        //reset flash value
+        if (flashValue > 100){
+            flashValue = -1;
+            imgWhiteScreen.setAlpha(0);
+        }
+        
     }
     
     @Override
@@ -389,15 +406,10 @@ public class GameIngame extends BasicGameState {
         }
         
         if(flashValue >= 0){
-            imgWhiteScreen.setAlpha(1 - flashValue/100);
             imgWhiteScreen.drawCentered(app.getWidth()/2, app.getHeight()/2);
-            flashValue += 0.3f;
         } 
         
-        if (flashValue > 100){
-            flashValue = -1;
-            imgWhiteScreen.setAlpha(0);
-        }
+        
     }
     
     //reset ball

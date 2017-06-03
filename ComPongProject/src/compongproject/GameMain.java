@@ -28,17 +28,20 @@ import org.newdawn.slick.util.ResourceLoader;
 public class GameMain extends StateBasedGame {
 
     public static final int GAMESTATE_MAINMENU = 0;
-    public static final int GAMESTATE_INGAME = 100;
+    public static final int GAMESTATE_INGAME = 1;
+    public static final int GAMESTATE_SETTINGS = 2;  
     
     public static final int BUTTON_GAMEMAINMENU_GAMEINGAME = 0;
     public static final int BUTTON_GAMEINGAME_GAMEMAINMENU = 1;
     public static final int BUTTON_GAMEINGAME_REMATCH = 2;
     public static final int BUTTON_GAMEMAINMENU_QUIT = 3;
+    public static final int BUTTON_GAMEMAINMENU_SETTINGS = 4;
     
     private AppGameContainer app;
     private Input input;
     private GameIngame gameIngame;
     private GameMainMenu gameMainMenu;
+    private GameSettings gameSettings;
     
     private boolean vSync;
     
@@ -61,9 +64,12 @@ public class GameMain extends StateBasedGame {
       
         gameIngame = new GameIngame(0,1,0,1, "fafawfafaf", "hgdfhdfghhdhdhdh", this);
         gameMainMenu = new GameMainMenu(this);
+        gameSettings = new GameSettings(this);
+        
         
         addState(gameMainMenu);
         addState(gameIngame);
+        addState(gameSettings);
         changeState(GAMESTATE_MAINMENU);
         
         app.setVSync(vSync);
@@ -130,6 +136,11 @@ public class GameMain extends StateBasedGame {
                 }
         
                 app.exit();
+                break;
+             
+            case BUTTON_GAMEMAINMENU_SETTINGS:
+                changeState(GAMESTATE_SETTINGS);
+                break;
                 
         }
     }
